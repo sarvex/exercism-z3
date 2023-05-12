@@ -7,23 +7,27 @@ def bowlingScore(pins_per_roll):
     # Calculate the indices in 'pins_per_roll' list that indicate the start of a frame
     frame_start_indices = get_frame_start_indices(pins_per_roll)
 
-    # Declare lists to append Z3 equations
-    constants = []
     equations = []
 
     # Add Number of Pins per Roll as their own variables
     num_pins_per_roll = [Int(f"num_pins_per_roll{roll_number}") for roll_number in range(len(pins_per_roll) + 1)]
-    for roll_number in range(len(pins_per_roll)):
-        constants.append(num_pins_per_roll[roll_number] == pins_per_roll[roll_number])
-
+    constants = [
+        num_pins_per_roll[roll_number] == pins_per_roll[roll_number]
+        for roll_number in range(len(pins_per_roll))
+    ]
     # Add additional 'Number of Pins per Roll' to ensure no list overbound error occurs below (set to 0 so it doesn't interfere with calculations)
     constants.append(num_pins_per_roll[len(pins_per_roll)] == 0)
 
     # Calculate and Add Number of Rolls per Frame as their own variables
     rolls_per_frame = [Int(f"rolls_per_frame{frame_number}") for frame_number in range(NUM_FRAMES)]
-    for frame_number in range(NUM_FRAMES - 1):
-        constants.append(rolls_per_frame[frame_number] == (frame_start_indices[frame_number + 1] - frame_start_indices[frame_number]))
-
+    constants.extend(
+        rolls_per_frame[frame_number]
+        == (
+            frame_start_indices[frame_number + 1]
+            - frame_start_indices[frame_number]
+        )
+        for frame_number in range(NUM_FRAMES - 1)
+    )
     constants.append(rolls_per_frame[NUM_FRAMES - 1] == (len(pins_per_roll) - frame_start_indices[NUM_FRAMES - 1]))
 
     # Determine score equation for each frame depending on strike, spare, or open frame
@@ -52,12 +56,10 @@ def bowlingScore(pins_per_roll):
     s.check()
     m = s.model()
 
-    # Sum scores for each frame to calculate total score
-    total_score = 0
-    for frame_number in range(NUM_FRAMES):
-        total_score += int(str(m.eval(frame_scores[frame_number])))
-
-    return total_score
+    return sum(
+        int(str(m.eval(frame_scores[frame_number])))
+        for frame_number in range(NUM_FRAMES)
+    )
 
 def get_frame_start_indices(pins_per_roll):
     #Determine indices in input list where each of the 10 frames start in standard bowling game
@@ -65,8 +67,5 @@ def get_frame_start_indices(pins_per_roll):
     roll_count = 0
     for i in range(NUM_FRAMES):
         frame_start_indices[i] = roll_count
-        if pins_per_roll[roll_count] == 10:
-            roll_count += 1
-        else:
-            roll_count += 2
+        roll_count += 1 if pins_per_roll[roll_count] == 10 else 2
     return frame_start_indices

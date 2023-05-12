@@ -22,7 +22,7 @@ def get_rtos_static_schedule(task_list, context_switch_overhead):
             dynamic_end_times[i] == dynamic_start_times[i] + dynamic_task_list[i].execution_time,
             dynamic_end_times[i] <= dynamic_task_list[i].deadline
         ])
-    
+
     # Individual Periodic Task Constraints
     num_periodic_tasks = len(periodic_task_list)
     all_periodic_start_times = [0] * num_periodic_tasks
@@ -42,7 +42,7 @@ def get_rtos_static_schedule(task_list, context_switch_overhead):
             ])
         all_periodic_start_times[i] = periodic_start_times
         all_periodic_end_times[i] = periodic_end_times
-    
+
     # Task Relationship Constraints
     # Dynamic Task relationships with all other Dyanmic Tasks and Periodic Tasks
     relationship_equations = []
@@ -85,7 +85,7 @@ def get_rtos_static_schedule(task_list, context_switch_overhead):
                     Or(fixed_start_time >= variable_end_time + context_switch_overhead,
                         fixed_end_time + context_switch_overhead <= variable_start_time)
                 )
-            
+
             # Compare with other periodic tasks and their corresponding repetitions
             for k in range(i + 1, num_periodic_tasks):
                 variable_periodic_start_times = all_periodic_start_times[k]
@@ -108,7 +108,7 @@ def get_rtos_static_schedule(task_list, context_switch_overhead):
         raise NoRtosStaticScheduleProducible()
 
     # Create output dictionary
-    output = dict()
+    output = {}
     for i in range(num_dynamic_tasks):
         taskId = dynamic_task_list[i].taskId
         start_time = m.eval(dynamic_start_times[i]).as_long()
@@ -124,5 +124,5 @@ def get_rtos_static_schedule(task_list, context_switch_overhead):
             start_time = m.eval(task_start_times[j]).as_long()
             end_time = m.eval(task_end_times[j]).as_long()
             output[taskId].append((start_time, end_time))
-    
+
     return output

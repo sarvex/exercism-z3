@@ -9,4 +9,3 @@ def average(x, y):
     print(s.model())
 
     return(s.model().eval(z))
-    pass

@@ -9,7 +9,7 @@ def generate_third_points(first_point, second_point):
 # Do not modify this function!
 # Works as described below
 def convert_to_float(z3_number):
-   """ 
+    """ 
     Converts AlgebraicNumRef, IntNumRef, and RatNumRef
     to a float from its string representation
     """
@@ -20,7 +20,4 @@ def convert_to_float(z3_number):
     # Remove ? from long decimal number if necessary
     z3_number_string = z3_number_string.rstrip('?')
 
-    # Convert remaining string to a float
-    z3_number_float = float(z3_number_string)
-
-    return z3_number_float 
+    return float(z3_number_string) 

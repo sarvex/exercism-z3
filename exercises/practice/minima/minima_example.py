@@ -14,7 +14,4 @@ def minima(a: float, b: float, c: float, d: float):
     ]
     s = Solver()
     s.add(equations)
-    if(s.check() == sat):
-        return s.model().eval(x)
-    else:
-        return None
+    return s.model().eval(x) if (s.check() == sat) else None

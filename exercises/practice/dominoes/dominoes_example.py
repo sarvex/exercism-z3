@@ -8,7 +8,7 @@ def possible_chain(dominoes):
 
     # Declare Z3 integers
     a,b,c,d,e,f = Ints('a b c d e f')
-   
+
     # Possible solutions for three dominoes
     equations = [Or(And(a == c, b == f, d == e),
         And(a == c, b == e, d == f),
@@ -27,7 +27,7 @@ def possible_chain(dominoes):
         d == IntVal(domino_values[3]),
         e == IntVal(domino_values[4]),
         f == IntVal(domino_values[5]))]
-        
+
     # Run Z3
     s = Solver()
     s.add(constraints)
@@ -35,6 +35,4 @@ def possible_chain(dominoes):
 
     # Return result
     is_sat = s.check()
-    if is_sat == sat:
-        return True
-    return False
+    return is_sat == sat

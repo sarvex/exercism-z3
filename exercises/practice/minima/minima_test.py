@@ -4,7 +4,7 @@ import z3
 
 def toFloat(x: z3.RatNumRef) -> float:
     """"""
-    if(isinstance(x, float) or isinstance(x, int)):
+    if isinstance(x, (float, int)):
         return x
     x = x.as_fraction()
     return float(x.numerator) / float(x.denominator)

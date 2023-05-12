@@ -12,7 +12,4 @@ def prime_number(x):
     s.pop()
 
     s.add(a > 1, b > 1, a * b == x)
-    if(s.check() == sat):
-        return False
-
-    return True
+    return s.check() != sat

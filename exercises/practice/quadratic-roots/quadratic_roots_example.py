@@ -7,7 +7,4 @@ def roots(a: float, b: float, c: float) -> tuple:
     s = Solver()
     s.add(ForAll([x], a * x ** 2 + b * x + c == a * (x - r1) * (x - r2)))
     hasRoots = s.check()
-    if(hasRoots == sat):
-        return (s.model().eval(r1), s.model().eval(r2))
-    else:
-        return None
+    return (s.model().eval(r1), s.model().eval(r2)) if (hasRoots == sat) else None

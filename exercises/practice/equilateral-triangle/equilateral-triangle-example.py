@@ -39,13 +39,12 @@ def generate_third_points(first_point, second_point):
     # Use first point decider equation to find first point
     solver.push()
     solver.add(point_decider_equation1)
-    if solver.check() == sat:
-        model = solver.model()
-        x2 = convert_to_float(model.eval(x[2]))
-        y2 = convert_to_float(model.eval(y[2]))
-        third_point_1 = x2, y2
-    else:
+    if solver.check() != sat:
         raise ArithmeticError("Equations not satisfiable for first point")
+    model = solver.model()
+    x2 = convert_to_float(model.eval(x[2]))
+    y2 = convert_to_float(model.eval(y[2]))
+    third_point_1 = x2, y2
     solver.pop()
 
     # Use second point decider equation to find second point
@@ -70,11 +69,8 @@ def convert_to_float(z3_number):
 
     # Get the Z3 Number's string representation
     z3_number_string = str(z3_number)
-    
+
     # Remove ? from long decimal number if necessary
     z3_number_string = z3_number_string.rstrip('?')
 
-    # Convert remaining string to a float
-    z3_number_float = float(z3_number_string)
-
-    return z3_number_float
+    return float(z3_number_string)
